@@ -13,7 +13,7 @@ ASS_HANDLER = list(getenv("ASS_HANDLER", "/").split())
 BOT_TOKEN = getenv("BOT_TOKEN")
 
 
-DURATION_LIMIT = int(getenv("DURATION_LIMIT", "90"))
+DURATION_LIMIT = int(getenv("DURATION_LIMIT", "600"))
 LOGGER_ID = int(getenv("LOGGER_ID"))
 MONGO_DB_URI = getenv("MONGO_DB_URI")
 OWNER_ID = list(map(int, getenv("OWNER_ID", "5350929381").split()))

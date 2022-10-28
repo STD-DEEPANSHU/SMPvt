@@ -135,7 +135,7 @@ async def play(_, message: Message):
             f"**» {BOT_NAME} ᴅᴏᴇsɴ'ᴛ ᴀʟʟᴏᴡ ᴛᴏ ᴩʟᴀʏ ᴛʀᴀᴄᴋs ʟᴏɴɢᴇʀ ᴛʜᴀɴ {DURATION_LIMIT} ᴍɪɴᴜᴛᴇs.**"
         )
     mystic = await message.reply_text(
-        f"**{BOT_NAME} ᴅᴏᴡɴʟᴏᴀᴅᴇʀ**\n\n**ᴛɪᴛʟᴇ :** {title}\n\n0% ■■■■■■■■■■■■ 100%"
+        f"**{BOT_NAME} ᴅᴏᴡɴʟᴏᴀᴅᴇʀ**\n\n**ᴛɪᴛʟᴇ :** {title}\n\n0% ■■■■■■■ 100%"
     )
     downloaded_file = await loop.run_in_executor(
         None, download, videoid, mystic, title

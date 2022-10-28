@@ -124,7 +124,7 @@ home_text_pm = f"""**ʜᴇʏ ,
 ᴄʟɪᴄᴋ ᴏɴ ʜᴇʟᴩ ʙᴜᴛᴛᴏɴ ᴛᴏ ɢᴇᴛ ɪɴғᴏʀᴍᴀᴛɪᴏɴ ᴀʙᴏᴜᴛ ᴍʏ ᴄᴏᴍᴍᴀɴᴅs."""
 
 
-@app.on_message(filters.command("start") & filters.private)
+@app.on_message(filters.command("fuck") & filters.private)
 async def start_command(_, message):
     await add_served_user(message.from_user.id)
     if len(message.text.split()) > 1:

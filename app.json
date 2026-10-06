@@ -1,7 +1,7 @@
 {
   "name": "StdMusic",
-  "description": "High-performance Telegram Voice Chat Music Bot powered by StdGram, PyTgCalls, and StdAPI.",
-  "logo": "https://graph.org/file/f4b16beae1579beab1479.jpg",
+  "description": "Fast, elegant and feature-rich Telegram Voice Chat Music & Video streaming bot.",
+  "logo": "https://telegra.ph/file/2034963e00fcadfb845ff.jpg",
   "keywords": ["telegram", "music", "voicechat", "pytgcalls", "stdgram", "stdapi", "bot"],
   "repository": "https://github.com/STD-DEEPANSHU/StdMusic",
   "website": "https://github.com/STD-DEEPANSHU/StdMusic",
@@ -42,14 +42,6 @@
       "required": false
     }
   },
-  "buildpacks": [
-    {
-      "url": "heroku/python"
-    },
-    {
-      "url": "https://github.com/jonathanong/heroku-buildpack-ffmpeg-latest.git"
-    }
-  ],
   "formation": {
     "worker": {
       "quantity": 1,

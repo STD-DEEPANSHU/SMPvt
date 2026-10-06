@@ -1,4 +1,4 @@
-stdgram>=1.0.0
+stdgram>=1.0.1
 stdapi>=2.2.0
 py-tgcalls==2.3.3
 tgcrypto>=1.2.5

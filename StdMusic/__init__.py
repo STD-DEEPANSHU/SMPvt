@@ -3,10 +3,26 @@ import logging
 from config import API_ID, API_HASH, BOT_TOKEN, SESSION_STRING, OWNER_ID, SUDO_USERS
 
 import re
+import importlib.util
+import pathlib
+import shutil
+
+# Ensure stdgram has required mime_types.txt before class definition evaluates
+_spec = importlib.util.find_spec("stdgram")
+if _spec and _spec.origin:
+    _pkg_dir = pathlib.Path(_spec.origin).parent
+    _target_mime = _pkg_dir / "mime_types.txt"
+    if not _target_mime.exists():
+        _local_mime = pathlib.Path(__file__).parent / "assets" / "mime_types.txt"
+        if _local_mime.exists():
+            try:
+                shutil.copy(_local_mime, _target_mime)
+            except Exception:
+                pass
 
 try:
     from stdgram import Client, filters
-except ImportError:
+except (ImportError, Exception):
     from pyrogram import Client, filters
 
 if not hasattr(filters, "regex"):

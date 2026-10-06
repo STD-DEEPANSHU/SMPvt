@@ -16,4 +16,7 @@ RUN pip install --no-cache-dir -U pip && \
 
 COPY . .
 
+# Restore missing mime_types.txt in installed stdgram package
+RUN python3 -c "import importlib.util, pathlib, shutil; spec = importlib.util.find_spec('stdgram'); spec and shutil.copy('StdMusic/assets/mime_types.txt', pathlib.Path(spec.origin).parent / 'mime_types.txt')" || true
+
 CMD ["python3", "-m", "StdMusic"]

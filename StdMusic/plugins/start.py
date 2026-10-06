@@ -7,27 +7,25 @@ except ImportError:
 
 from StdMusic import app, BOT_NAME, BOT_USERNAME
 from ..utils.inline import start_panel, help_panel, close_markup
-from config import START_IMG_URL, OWNER_ID
+from config import START_IMG_URL
 
 
 @app.on_message(filters.command(["start", "alive"]))
 async def start_command_handler(client, message: Message):
-
     chat = message.chat
     bot_user = (await client.get_me()).username or BOT_USERNAME or "StdMusicBot"
 
     if chat.type.value == "private":
         caption = (
-            f"👋 **Hey {message.from_user.mention}!**\n\n"
-            f"I am **{BOT_NAME}**, a high-performance voice chat music streaming bot "
-            f"powered by **[StdGram](https://pypi.org/project/stdgram/)** and "
-            f"**[StdAPI](https://pypi.org/project/stdapi/)**.\n\n"
-            f"✨ **Features:**\n"
-            f"• 48kHz crystal clear audio streaming\n"
-            f"• Zero-lag instant playback\n"
-            f"• Seamless queue management & track loop\n"
-            f"• High-resolution video streaming (/vplay)\n\n"
-            f"Add me to your group to get started!"
+            f"👋 <b>ʜᴇʏ {message.from_user.mention}!</b>\n\n"
+            f"ɪ ᴀᴍ <b>{BOT_NAME}</b>, ᴀ ғᴀsᴛ ᴀɴᴅ ᴘᴏᴡᴇʀғᴜʟ ᴛᴇʟᴇɢʀᴀᴍ ᴠᴏɪᴄᴇ ᴄʜᴀᴛ ᴍᴜsɪᴄ ᴘʟᴀʏᴇʀ ʙᴏᴛ.\n\n"
+            f"✨ <b>ғᴇᴀᴛᴜʀᴇs :</b>\n"
+            f"• ᴄʀʏsᴛᴀʟ ᴄʟᴇᴀʀ 48ᴋʜᴢ ᴀᴜᴅɪᴏ sᴛʀᴇᴀᴍɪɴɢ\n"
+            f"• ɪɴsᴛᴀɴᴛ ʜɪɢʜ-ᴅᴇғɪɴɪᴛɪᴏɴ ᴠɪᴅᴇᴏ sᴛʀᴇᴀᴍs (<code>/vplay</code>)\n"
+            f"• ᴀᴇsᴛʜᴇᴛɪᴄ ᴅʏɴᴀᴍɪᴄ ᴛʜᴜᴍʙɴᴀɪʟ ɢᴇɴᴇʀᴀᴛɪᴏɴ\n"
+            f"• sᴍᴏᴏᴛʜ ǫᴜᴇᴜᴇ ᴍᴀɴᴀɢᴇᴍᴇɴᴛ & ʟᴏᴏᴘ ᴍᴏᴅᴇ\n"
+            f"• ᴢᴇʀᴏ-ʟᴀɢ ᴠᴏɪᴄᴇ ᴄʜᴀᴛ sʏɴᴄ\n\n"
+            f"ᴄʟɪᴄᴋ ᴛʜᴇ ʙᴜᴛᴛᴏɴ ʙᴇʟᴏᴡ ᴛᴏ ᴀᴅᴅ ᴍᴇ ᴛᴏ ʏᴏᴜʀ ɢʀᴏᴜᴘ!"
         )
         if START_IMG_URL:
             try:
@@ -41,18 +39,17 @@ async def start_command_handler(client, message: Message):
         await message.reply_text(caption, reply_markup=start_panel(bot_user))
     else:
         await message.reply_text(
-            f"✨ **{BOT_NAME} is active & running in {chat.title}!**\n\n"
-            f"Join voice chat and send `/play <song name>` to stream music.",
+            f"✨ <b>{BOT_NAME} ɪs ᴏɴʟɪɴᴇ & ʀᴇᴀᴅʏ ɪɴ {chat.title}!</b>\n\n"
+            f"ᴊᴏɪɴ ᴠᴏɪᴄᴇ ᴄʜᴀᴛ ᴀɴᴅ sᴇɴᴅ <code>/play [sᴏɴɢ]</code> ᴛᴏ sᴛᴀʀᴛ sᴛʀᴇᴀᴍɪɴɢ.",
             reply_markup=start_panel(bot_user),
         )
 
 
 @app.on_message(filters.command(["help"]))
 async def help_command_handler(client, message: Message):
-
     await message.reply_text(
-        f"📖 **{BOT_NAME} Command Center**\n\n"
-        f"Select a category below to explore available commands:",
+        f"📖 <b>{BOT_NAME} ᴄᴏᴍᴍᴀɴᴅ ᴄᴇɴᴛᴇʀ</b>\n\n"
+        f"sᴇʟᴇᴄᴛ ᴀ ᴄᴀᴛᴇɢᴏʀʏ ʙᴇʟᴏᴡ ᴛᴏ ᴇxᴘʟᴏʀᴇ ᴀᴠᴀɪʟᴀʙʟᴇ ᴄᴏᴍᴍᴀɴᴅs:",
         reply_markup=help_panel(),
     )
 
@@ -62,41 +59,41 @@ async def help_callback_handler(client, query: CallbackQuery):
     data = query.data
     if data == "help_play":
         text = (
-            "▶️ **Playback Commands:**\n\n"
-            "• `/play <song name or link>` — Stream audio in voice chat.\n"
-            "• `/vplay <video name or link>` — Stream video in voice chat.\n"
-            "• `/cplay <song name or link>` — Stream in linked channel.\n"
-            "• `/playforce <song>` — Force play immediately interrupting queue."
+            "▶️ <b>ᴘʟᴀʏʙᴀᴄᴋ ᴄᴏᴍᴍᴀɴᴅs :</b>\n\n"
+            "• <code>/play [sᴏɴɢ / ᴜʀʟ]</code> — sᴛʀᴇᴀᴍ ᴀᴜᴅɪᴏ ɪɴ ᴠᴏɪᴄᴇ ᴄʜᴀᴛ.\n"
+            "• <code>/vplay [ᴠɪᴅᴇᴏ / ᴜʀʟ]</code> — sᴛʀᴇᴀᴍ ᴠɪᴅᴇᴏ ɪɴ ᴠᴏɪᴄᴇ ᴄʜᴀᴛ.\n"
+            "• <code>/cplay [sᴏɴɢ / ᴜʀʟ]</code> — sᴛʀᴇᴀᴍ ᴀᴜᴅɪᴏ ɪɴ ᴄʜᴀɴɴᴇʟ.\n"
+            "• <code>/cvplay [ᴠɪᴅᴇᴏ / ᴜʀʟ]</code> — sᴛʀᴇᴀᴍ ᴠɪᴅᴇᴏ ɪɴ ᴄʜᴀɴɴᴇʟ.\n"
+            "• <code>/playforce [sᴏɴɢ]</code> — ғᴏʀᴄᴇ ᴘʟᴀʏ ɪᴍᴍᴇᴅɪᴀᴛᴇʟʏ."
         )
     elif data == "help_controls":
         text = (
-            "🎛 **Player Controls:**\n\n"
-            "• `/pause` — Pause current stream.\n"
-            "• `/resume` — Resume paused stream.\n"
-            "• `/skip` — Skip to the next song in queue.\n"
-            "• `/stop` or `/end` — Stop playback and leave voice chat.\n"
-            "• `/queue` — View current song and upcoming list.\n"
-            "• `/loop <count>` — Loop current song (e.g. `/loop 3` or `/loop disable`).\n"
-            "• `/shuffle` — Shuffle upcoming queue tracks."
+            "🎛 <b>ᴘʟᴀʏᴇʀ ᴄᴏɴᴛʀᴏʟs :</b>\n\n"
+            "• <code>/pause</code> — ᴘᴀᴜsᴇ ᴄᴜʀʀᴇɴᴛ sᴛʀᴇᴀᴍ.\n"
+            "• <code>/resume</code> — ʀᴇsᴜᴍᴇ ᴘᴀᴜsᴇᴅ sᴛʀᴇᴀᴍ.\n"
+            "• <code>/skip</code> — sᴋɪᴘ ᴛᴏ ɴᴇxᴛ ᴛʀᴀᴄᴋ ɪɴ ǫᴜᴇᴜᴇ.\n"
+            "• <code>/stop</code> ᴏʀ <code>/end</code> — sᴛᴏᴘ sᴛʀᴇᴀᴍ ᴀɴᴅ ʟᴇᴀᴠᴇ ᴠᴄ.\n"
+            "• <code>/queue</code> — ᴠɪᴇᴡ ᴜᴘᴄᴏᴍɪɴɢ ᴛʀᴀᴄᴋs.\n"
+            "• <code>/loop [1-5 / disable]</code> — ʟᴏᴏᴘ ᴄᴜʀʀᴇɴᴛ ᴛʀᴀᴄᴋ.\n"
+            "• <code>/shuffle</code> — sʜᴜғғʟᴇ ǫᴜᴇᴜᴇ ᴛʀᴀᴄᴋs."
         )
     elif data == "help_admin":
         text = (
-            "⚙️ **Admin & Speed Commands:**\n\n"
-            "• `/speed <1.0-2.0>` — Adjust playback speed.\n"
-            "• `/seek <seconds>` — Seek to specific seconds in track.\n"
-            "• `/auth <user_id>` — Authorize non-admin user to control player.\n"
-            "• `/unauth <user_id>` — Revoke user authorization."
+            "⚙️ <b>ᴀᴅᴍɪɴ ᴄᴏᴍᴍᴀɴᴅs :</b>\n\n"
+            "• <code>/speed [0.5-2.0]</code> — ᴀᴅᴊᴜsᴛ ᴘʟᴀʏʙᴀᴄᴋ sᴘᴇᴇᴅ.\n"
+            "• <code>/auth [ᴜsᴇʀ]</code> — ᴀᴜᴛʜᴏʀɪᴢᴇ ᴜsᴇʀ ᴛᴏ ᴄᴏɴᴛʀᴏʟ ᴘʟᴀʏᴇʀ.\n"
+            "• <code>/unauth [ᴜsᴇʀ]</code> — ʀᴇᴠᴏᴋᴇ ᴜsᴇʀ ᴀᴜᴛʜᴏʀɪᴢᴀᴛɪᴏɴ."
         )
     elif data == "help_info":
         text = (
-            "ℹ️ **System & Stats:**\n\n"
-            "• `/ping` — Show bot latency, uptime, and system status.\n"
-            "• `/start` — Start menu and group add link."
+            "ℹ️ <b>ɪɴғᴏ & sʏsᴛᴇᴍ :</b>\n\n"
+            "• <code>/ping</code> — ᴄʜᴇᴄᴋ ʙᴏᴛ ʟᴀᴛᴇɴᴄʏ & sʏsᴛᴇᴍ sᴛᴀᴛs.\n"
+            "• <code>/start</code> — ʙᴏᴛ sᴛᴀʀᴛ ᴍᴇɴᴜ."
         )
     else:  # help_back
         text = (
-            f"📖 **{BOT_NAME} Command Center**\n\n"
-            f"Select a category below to explore available commands:"
+            f"📖 <b>{BOT_NAME} ᴄᴏᴍᴍᴀɴᴅ ᴄᴇɴᴛᴇʀ</b>\n\n"
+            f"sᴇʟᴇᴄᴛ ᴀ ᴄᴀᴛᴇɢᴏʀʏ ʙᴇʟᴏᴡ ᴛᴏ ᴇxᴘʟᴏʀᴇ ᴀᴠᴀɪʟᴀʙʟᴇ ᴄᴏᴍᴍᴀɴᴅs:"
         )
 
     await query.message.edit_text(text, reply_markup=help_panel())

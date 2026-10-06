@@ -1,133 +1,131 @@
 # StdMusic
 
 <p align="center">
-  <strong>High-Performance Telegram Voice Chat Music Bot</strong><br>
-  <em>Engineered with StdGram, PyTgCalls 2.3.3, and the StdAPI Media Engine.</em>
+  <img src="https://telegra.ph/file/2034963e00fcadfb845ff.jpg" alt="StdMusic Banner" width="450">
 </p>
 
 <p align="center">
-  <a href="https://pypi.org/project/stdgram/"><img src="https://img.shields.io/badge/Framework-StdGram-blue?style=flat-square" alt="StdGram"></a>
-  <a href="https://pypi.org/project/stdapi/"><img src="https://img.shields.io/badge/Media%20Engine-StdAPI-orange?style=flat-square" alt="StdAPI"></a>
-  <a href="https://github.com/pytgcalls/pytgcalls"><img src="https://img.shields.io/badge/Voice-PyTgCalls%202.3.3-green?style=flat-square" alt="PyTgCalls"></a>
-  <a href="https://github.com/STD-DEEPANSHU/StdMusic"><img src="https://img.shields.io/github/stars/STD-DEEPANSHU/StdMusic?style=flat-square" alt="Stars"></a>
-  <a href="https://t.me/TeamStdNetwork"><img src="https://img.shields.io/badge/Support-TeamStdNetwork-blueviolet?style=flat-square" alt="Support"></a>
+  <strong>Fast, sleek, and feature-rich Telegram Music & Video streaming bot.</strong><br>
+  Built with high-performance voice chat streaming, dynamic album art generation, and clean inline controls.
+</p>
+
+<p align="center">
+  <a href="https://python.org"><img src="https://img.shields.io/badge/Python-3.10%20%7C%203.11%20%7C%203.12-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python"></a>
+  <a href="https://github.com/pytgcalls/pytgcalls"><img src="https://img.shields.io/badge/Voice%20Engine-PyTgCalls%202.3.3-00C853?style=flat-square" alt="PyTgCalls"></a>
+  <a href="https://github.com/STD-DEEPANSHU/StdMusic/stargazers"><img src="https://img.shields.io/github/stars/STD-DEEPANSHU/StdMusic?style=flat-square&color=FFB300" alt="Stars"></a>
+  <a href="https://github.com/STD-DEEPANSHU/StdMusic/network/members"><img src="https://img.shields.io/github/forks/STD-DEEPANSHU/StdMusic?style=flat-square&color=29B6F6" alt="Forks"></a>
+  <a href="https://t.me/TeamStdNetwork"><img src="https://img.shields.io/badge/Community-TeamStdNetwork-7E57C2?style=flat-square&logo=telegram&logoColor=white" alt="Telegram"></a>
 </p>
 
 ---
 
-## Overview
+## Highlights
 
-**StdMusic** is an ultra-fast, modern Telegram music streaming bot designed to play high-fidelity audio and video streams in group voice chats and channels.
-
-Unlike legacy music bots that rely on fragile third-party scrapers or outdated libraries, StdMusic is powered by:
-- **[StdGram](https://pypi.org/project/stdgram/):** Next-generation Telegram MTProto client with automatic FloodWait recovery and zero dispatcher freezes.
-- **[StdAPI](https://pypi.org/project/stdapi/):** Universal media extraction engine providing instant stream resolution without downtime.
-- **[PyTgCalls 2.3.3](https://github.com/pytgcalls/pytgcalls):** Modern WebRTC voice chat streaming engine with 48kHz audio clarity and hardware-accelerated video rendering.
-
----
-
-## Features
-
-- 🎵 **Instant Audio & Video Streaming:** Play any YouTube track, direct media URL, or query in seconds.
-- 📺 **Full Video Streaming Support:** `/vplay` command for seamless group video watch parties.
-- 📜 **In-Memory Queue Engine:** Zero-latency track transitions and loop playback (`/loop`).
-- 🎛 **Interactive Player Controls:** Clean inline buttons for Pause, Resume, Skip, Stop, and Queue inspection.
-- ⚡ **Zero Dispatcher Freezes:** Built directly on StdGram to eliminate floodwait blocks in active groups.
-- 🔒 **Admin & Authorization Management:** Group admins can authorize specific users (`/auth`) to control the player.
-- 🎚 **Playback Speed Control:** Adjust playback speed on the fly (`/speed 1.25x`, `1.5x`, `2.0x`).
+- 🎵 **Crystal Clear Audio:** 48kHz stereo stream with automatic bitrate leveling.
+- 📺 **Full Video Playback:** Supports 720p/1080p video streaming directly in Telegram voice calls (`/vplay`).
+- 🎨 **Dynamic Album Art:** Generates high-res 1280x720 player thumbnails on the fly with circular album cover art, blurred background, seekbar, and timestamps.
+- ⚡ **Zero Playback Lag:** Instant stream resolution and seamless queue transitions.
+- 🎛 **Interactive Player Controls:** Inline buttons for Pause, Resume, Skip, Stop, Shuffle, and Queue inspection.
+- 🔄 **Loop & Speed Controls:** Easily loop tracks (`/loop 3`) or adjust playback speeds (`/speed 1.25`).
+- 🛡 **Admin & Auth Management:** Group administrators can grant control permissions to specific users via `/auth`.
 
 ---
 
 ## Commands
 
-### 🎵 Playback Commands
+### 🎵 Playback
 | Command | Description |
 |:---|:---|
-| `/play <query or link>` | Streams high-quality audio in voice chat. |
-| `/vplay <query or link>` | Streams video + audio in voice chat. |
-| `/cplay <query or link>` | Streams audio in linked channel. |
-| `/cvplay <query or link>` | Streams video in linked channel. |
+| `/play <song / url>` | Stream high-quality audio in voice chat |
+| `/vplay <video / url>` | Stream video + audio in voice chat |
+| `/cplay <song / url>` | Stream audio in linked channel |
+| `/cvplay <video / url>` | Stream video in linked channel |
+| `/playforce <query>` | Force play immediately, skipping active stream |
 
 ### 🎛 Player Controls
 | Command | Description |
 |:---|:---|
-| `/pause` | Pauses currently playing stream. |
-| `/resume` | Resumes paused stream. |
-| `/skip` | Skips to the next track in queue. |
-| `/stop` or `/end` | Stops playback, clears queue, and leaves voice chat. |
-| `/queue` | Displays currently playing track and upcoming queue. |
-| `/loop <1-5 or disable>` | Loops the current track. |
-| `/shuffle` | Shuffles upcoming tracks in queue. |
+| `/pause` | Pause active playback |
+| `/resume` | Resume paused playback |
+| `/skip` | Skip to the next track in queue |
+| `/stop` or `/end` | Stop stream and leave voice chat |
+| `/queue` | View current and upcoming queued tracks |
+| `/loop <1-5 / off>` | Loop current track |
+| `/shuffle` | Shuffle upcoming queue order |
 
-### ⚙️ Admin & Utilities
+### ⚙️ Management & Info
 | Command | Description |
 |:---|:---|
-| `/speed <0.5 - 2.0>` | Changes playback speed. |
-| `/auth <user_id>` | Authorizes a non-admin to use player controls. |
-| `/unauth <user_id>` | Revokes user authorization. |
-| `/ping` | Displays latency, uptime, RAM, and CPU usage. |
-| `/start` | Displays start menu and group add link. |
-| `/help` | Interactive command center. |
+| `/speed <0.5 - 2.0>` | Adjust stream playback speed |
+| `/auth <user>` | Authorize a non-admin to use player controls |
+| `/unauth <user>` | Revoke user authorization |
+| `/ping` | Check bot latency, uptime, and system status |
+| `/start` | Open bot start menu and invite links |
+| `/help` | Open interactive help center |
 
 ---
 
-## Deployment Guide
+## Deployment
 
-### 1. Local / VPS Deployment
+### 1. Heroku (One-Click)
+
+Click the button below to deploy your instance to Heroku:
+
+[![Deploy to Heroku](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/STD-DEEPANSHU/StdMusic)
+
+---
+
+### 2. VPS / Local Server
 
 ```bash
-# 1. Clone repository
+# Clone the repository
 git clone https://github.com/STD-DEEPANSHU/StdMusic.git
 cd StdMusic
 
-# 2. Install dependencies
+# Install required dependencies
 pip install -r requirements.txt
 
-# 3. Configure environment
+# Setup environment variables
 cp sample.env .env
-# Edit .env with your API_ID, API_HASH, BOT_TOKEN, and SESSION_STRING
+# Edit .env with your credentials
 
-# 4. Start the bot
+# Run the bot
 python3 -m StdMusic
 ```
 
-### 2. Docker Deployment
+---
+
+### 3. Docker
 
 ```bash
 docker build -t stdmusic .
 docker run -d --env-file .env --name stdmusic stdmusic
 ```
 
-### 3. Heroku (1-Click)
+---
 
-Click the button below to deploy your own instance of StdMusic on Heroku:
+## Configuration Variables
 
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/STD-DEEPANSHU/StdMusic)
+| Variable | Description | Mandatory |
+|:---|:---|:---:|
+| `API_ID` | Telegram API ID from [my.telegram.org](https://my.telegram.org) | Yes |
+| `API_HASH` | Telegram API Hash from [my.telegram.org](https://my.telegram.org) | Yes |
+| `BOT_TOKEN` | Bot token created with [@BotFather](https://t.me/BotFather) | Yes |
+| `OWNER_ID` | Your Telegram user ID | Yes |
+| `SESSION_STRING` | Pyrogram / StdGram session string for assistant userbot | Yes |
+| `SUDO_USERS` | Space-separated list of sudo user IDs | No |
+| `DURATION_LIMIT` | Max track duration in seconds (default: `3600`) | No |
+| `SUPPORT_CHAT` | Telegram support group link | No |
+| `SUPPORT_CHANNEL` | Telegram updates channel link | No |
 
 ---
 
-## Required Environment Variables
+## Credits
 
-| Variable | Description |
-|:---|:---|
-| `API_ID` | Telegram API ID from [my.telegram.org](https://my.telegram.org). |
-| `API_HASH` | Telegram API Hash from [my.telegram.org](https://my.telegram.org). |
-| `BOT_TOKEN` | Telegram Bot Token from [@BotFather](https://t.me/BotFather). |
-| `OWNER_ID` | Telegram user ID of the Bot Owner. |
-| `SESSION_STRING` | Pyrogram / StdGram session string for the assistant userbot. |
-| `SUDO_USERS` | Space-separated Telegram user IDs of trusted admins. |
-| `DURATION_LIMIT` | Maximum allowed song duration in seconds (default: `3600`). |
+- **[PyTgCalls](https://github.com/pytgcalls/pytgcalls)** for voice chat WebRTC streaming.
+- **[TeamStdNetwork](https://github.com/STD-DEEPANSHU)** for maintenance and bot architecture.
+- Community contributors and testers.
 
----
-
-## Credits & Upstream Acknowledgements
-
-- **[PyTgCalls](https://github.com/pytgcalls/pytgcalls)** — High-performance Telegram voice chat WebRTC client.
-- **[StdGram](https://pypi.org/project/stdgram/)** — Next-Gen MTProto framework with native auto-recovery.
-- **[StdAPI](https://pypi.org/project/stdapi/)** — Universal media extraction engine.
-- **TeamStdNetwork** — Architecture, maintenance, and development.
-
-```
-Maintained by STD-DEEPANSHU <stddeepanshu@aol.com>
-TeamStdNetwork (https://github.com/STD-DEEPANSHU)
-```
+<p align="center">
+  <sub>Maintained with ❤️ by <a href="https://github.com/STD-DEEPANSHU">STD-DEEPANSHU</a></sub>
+</p>

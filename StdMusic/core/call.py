@@ -1,6 +1,7 @@
 import asyncio
 import logging
 from typing import Dict, Any, Optional
+
 try:
     from pytgcalls.types import StreamEnded
     from pytgcalls.exceptions import NoActiveGroupCall, NotInCallError
@@ -9,10 +10,11 @@ except ImportError:
     NoActiveGroupCall = Exception
     NotInCallError = Exception
 
-
 from StdMusic import app, userbot, pytgcalls
 from .engine import music_engine
 from ..utils.queue import queue_manager
+from ..utils.inline import player_markup
+from ..utils.thumbnails import get_thumb
 
 logger = logging.getLogger("StdMusic.Call")
 
@@ -90,10 +92,38 @@ if pytgcalls:
             next_track = await call_manager.skip(chat_id)
             if next_track:
                 title = next_track.get("title", "Track")
+                dur_str = next_track.get("duration_str", "")
+                url = next_track.get("url", "")
+                requester = next_track.get("requester", "Auto Queue")
+                caption = (
+                    f"➲ <b>sᴛᴀʀᴛᴇᴅ sᴛʀᴇᴀᴍɪɴɢ</b>\n\n"
+                    f"<b>‣ ᴛɪᴛʟᴇ :</b> <a href=\"{url}\">{title[:35]}</a>\n"
+                    f"<b>‣ ᴅᴜʀᴀᴛɪᴏɴ :</b> {dur_str}\n"
+                    f"<b>‣ ʀᴇǫᴜᴇsᴛᴇᴅ ʙʏ :</b> {requester}"
+                )
+                try:
+                    thumb_path = await get_thumb(
+                        videoid=next_track.get("id", "track"),
+                        title=title,
+                        duration=dur_str,
+                        channel=next_track.get("channel", ""),
+                        thumb_url=next_track.get("thumbnail", ""),
+                    )
+                    if thumb_path:
+                        return await app.send_photo(
+                            chat_id,
+                            photo=thumb_path,
+                            caption=caption,
+                            reply_markup=player_markup(chat_id),
+                        )
+                except Exception:
+                    pass
+
                 try:
                     await app.send_message(
                         chat_id,
-                        f"▶️ **Now Playing Next Track:**\n**{title}**\n\n⚡ *Powered by [StdMusic](https://github.com/STD-DEEPANSHU/StdMusic)*",
+                        caption,
+                        reply_markup=player_markup(chat_id),
                     )
                 except Exception:
                     pass

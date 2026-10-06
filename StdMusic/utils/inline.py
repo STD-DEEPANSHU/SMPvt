@@ -3,7 +3,7 @@ try:
 except ImportError:
     from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
-from config import SUPPORT_CHAT, SUPPORT_CHANNEL, BOT_NAME
+from config import SUPPORT_CHAT, SUPPORT_CHANNEL
 
 
 def start_panel(bot_username: str) -> InlineKeyboardMarkup:
@@ -12,38 +12,38 @@ def start_panel(bot_username: str) -> InlineKeyboardMarkup:
         [
             [
                 InlineKeyboardButton(
-                    text="➕ Add Me to Your Group",
+                    text="➕ ᴀᴅᴅ ᴍᴇ ᴛᴏ ʏᴏᴜʀ ɢʀᴏᴜᴘ ➕",
                     url=f"https://t.me/{bot_username}?startgroup=true",
                 )
             ],
             [
-                InlineKeyboardButton(text="📖 Commands Help", callback_data="help_menu"),
-                InlineKeyboardButton(text="📢 Channel", url=SUPPORT_CHANNEL),
+                InlineKeyboardButton(text="📖 ᴄᴏᴍᴍᴀɴᴅs", callback_data="help_menu"),
+                InlineKeyboardButton(text="📢 ᴄʜᴀɴɴᴇʟ", url=SUPPORT_CHANNEL),
             ],
             [
-                InlineKeyboardButton(text="💬 Support Chat", url=SUPPORT_CHAT),
-                InlineKeyboardButton(text="🌐 GitHub", url="https://github.com/STD-DEEPANSHU/StdMusic"),
+                InlineKeyboardButton(text="💬 sᴜᴘᴘᴏʀᴛ", url=SUPPORT_CHAT),
+                InlineKeyboardButton(text="🌐 sᴏᴜʀᴄᴇ", url="https://github.com/STD-DEEPANSHU/StdMusic"),
             ],
         ]
     )
 
 
 def player_markup(chat_id: int) -> InlineKeyboardMarkup:
-    """Stream playback controller buttons."""
+    """Stream playback controller buttons in sleek AnonX & Daxx styling."""
     return InlineKeyboardMarkup(
         [
             [
-                InlineKeyboardButton(text="⏸ Pause", callback_data=f"ctrl_pause_{chat_id}"),
-                InlineKeyboardButton(text="▶️ Resume", callback_data=f"ctrl_resume_{chat_id}"),
-                InlineKeyboardButton(text="⏭ Skip", callback_data=f"ctrl_skip_{chat_id}"),
+                InlineKeyboardButton(text="▷", callback_data=f"ctrl_resume_{chat_id}"),
+                InlineKeyboardButton(text="II", callback_data=f"ctrl_pause_{chat_id}"),
+                InlineKeyboardButton(text="‣‣I", callback_data=f"ctrl_skip_{chat_id}"),
+                InlineKeyboardButton(text="▢", callback_data=f"ctrl_stop_{chat_id}"),
             ],
             [
-                InlineKeyboardButton(text="⏹ Stop", callback_data=f"ctrl_stop_{chat_id}"),
-                InlineKeyboardButton(text="📜 Queue", callback_data=f"ctrl_queue_{chat_id}"),
-                InlineKeyboardButton(text="🔀 Shuffle", callback_data=f"ctrl_shuffle_{chat_id}"),
+                InlineKeyboardButton(text="🔀 sʜᴜғғʟᴇ", callback_data=f"ctrl_shuffle_{chat_id}"),
+                InlineKeyboardButton(text="📜 ǫᴜᴇᴜᴇ", callback_data=f"ctrl_queue_{chat_id}"),
             ],
             [
-                InlineKeyboardButton(text="🗑 Close Player", callback_data="close_menu"),
+                InlineKeyboardButton(text="🗑 ᴄʟᴏsᴇ", callback_data="close_menu"),
             ],
         ]
     )
@@ -54,20 +54,21 @@ def help_panel() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(
         [
             [
-                InlineKeyboardButton(text="▶️ Play Commands", callback_data="help_play"),
-                InlineKeyboardButton(text="🎛 Player Controls", callback_data="help_controls"),
+                InlineKeyboardButton(text="▶️ ᴘʟᴀʏʙᴀᴄᴋ", callback_data="help_play"),
+                InlineKeyboardButton(text="🎛 ᴄᴏɴᴛʀᴏʟs", callback_data="help_controls"),
             ],
             [
-                InlineKeyboardButton(text="⚙️ Admin & Speed", callback_data="help_admin"),
-                InlineKeyboardButton(text="ℹ️ Info & Ping", callback_data="help_info"),
+                InlineKeyboardButton(text="⚙️ ᴀᴅᴍɪɴ & sᴘᴇᴇᴅ", callback_data="help_admin"),
+                InlineKeyboardButton(text="ℹ️ sʏsᴛᴇᴍ & ɪɴғᴏ", callback_data="help_info"),
             ],
             [
-                InlineKeyboardButton(text="🔙 Back", callback_data="help_back"),
-                InlineKeyboardButton(text="🗑 Close", callback_data="close_menu"),
+                InlineKeyboardButton(text="🔙 ʙᴀᴄᴋ", callback_data="help_back"),
+                InlineKeyboardButton(text="🗑 ᴄʟᴏsᴇ", callback_data="close_menu"),
             ],
         ]
     )
 
 
 def close_markup() -> InlineKeyboardMarkup:
-    return InlineKeyboardMarkup([[InlineKeyboardButton(text="🗑 Close", callback_data="close_menu")]])
+    """Close button markup."""
+    return InlineKeyboardMarkup([[InlineKeyboardButton(text="🗑 ᴄʟᴏsᴇ", callback_data="close_menu")]])

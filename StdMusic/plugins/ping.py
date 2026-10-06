@@ -1,6 +1,5 @@
 import time
 import psutil
-from datetime import datetime
 
 try:
     from stdgram import filters
@@ -17,9 +16,8 @@ START_TIME = time.time()
 
 @app.on_message(filters.command(["ping", "status"]))
 async def ping_command_handler(client, message: Message):
-
     start = time.time()
-    msg = await message.reply_text("⚡ *Checking latency...*")
+    msg = await message.reply_text("⚡ <b>ᴘɪɴɢɪɴɢ...</b>")
     latency = round((time.time() - start) * 1000, 2)
 
     uptime = get_readable_time(time.time() - START_TIME)
@@ -28,11 +26,8 @@ async def ping_command_handler(client, message: Message):
     cpu_usage = f"{psutil.cpu_percent()}%"
 
     await msg.edit_text(
-        f"🏓 **PONG!** `{latency} ms`\n\n"
-        f"🤖 **Bot:** `{BOT_NAME}`\n"
-        f"⏱ **Uptime:** `{uptime}`\n"
-        f"💾 **RAM Usage:** `{ram_usage}`\n"
-        f"🖥 **CPU Usage:** `{cpu_usage}`\n"
-        f"🚀 **Core Engine:** `StdGram + StdAPI + PyTgCalls 2.3.3`\n\n"
-        f"⚡ *Maintained by [TeamStdNetwork](https://github.com/STD-DEEPANSHU)*"
+        f"🏓 <b>ᴘᴏɴɢ !</b> <code>{latency} ᴍs</code>\n\n"
+        f"⏱ <b>ᴜᴘᴛɪᴍᴇ :</b> <code>{uptime}</code>\n"
+        f"💾 <b>ʀᴀᴍ :</b> <code>{ram_usage}</code>\n"
+        f"🖥 <b>ᴄᴘᴜ :</b> <code>{cpu_usage}</code>"
     )

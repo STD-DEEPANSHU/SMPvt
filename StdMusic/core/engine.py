@@ -85,7 +85,7 @@ class StdMusicEngine:
                         "duration": res.get("duration", 0),
                         "duration_str": f"{res.get('duration', 0)}s",
                         "thumbnail": res.get("thumbnail", ""),
-                        "channel": res.get("author", "StdAPI"),
+                        "channel": res.get("author", "YouTube"),
                     }
             except Exception as e:
                 logger.warning(f"StdAPI remote extraction failed, falling back to local engine: {e}")
@@ -103,7 +103,7 @@ class StdMusicEngine:
                         "duration": res.duration or 0,
                         "duration_str": f"{res.duration or 0}s",
                         "thumbnail": res.thumbnail or "",
-                        "channel": res.author or "StdAPI",
+                        "channel": res.author or "YouTube",
                     }
                 except Exception as e:
                     logger.error(f"StdEngine local extraction failed: {e}")

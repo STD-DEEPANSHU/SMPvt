@@ -12,6 +12,7 @@ from ..core.call import call_manager
 from ..utils.queue import queue_manager
 from ..utils.inline import player_markup, close_markup
 from ..utils.formatters import format_duration
+from ..utils.thumbnails import get_thumb
 from ..misc import is_admin
 
 logger = logging.getLogger("StdMusic.Control")
@@ -21,51 +22,73 @@ logger = logging.getLogger("StdMusic.Control")
 async def pause_command_handler(client, message: Message):
     chat_id = message.chat.id
     if not await is_admin(chat_id, message.from_user.id):
-        return await message.reply_text("❌ *Only admins can control music playback.*")
+        return await message.reply_text("❌ <b>ᴏɴʟʏ ᴀᴅᴍɪɴs ᴄᴀɴ ᴄᴏɴᴛʀᴏʟ ᴍᴜsɪᴄ.</b>")
 
     if await call_manager.pause(chat_id):
-        await message.reply_text("⏸ **Playback has been paused.**")
+        await message.reply_text("⏸ <b>sᴛʀᴇᴀᴍ ᴘᴀᴜsᴇᴅ.</b>")
     else:
-        await message.reply_text("❌ *No active stream found to pause.*")
+        await message.reply_text("❌ <b>ɴᴏ ᴀᴄᴛɪᴠᴇ sᴛʀᴇᴀᴍ ғᴏᴜɴᴅ.</b>")
 
 
 @app.on_message(filters.command(["resume"]))
 async def resume_command_handler(client, message: Message):
     chat_id = message.chat.id
     if not await is_admin(chat_id, message.from_user.id):
-        return await message.reply_text("❌ *Only admins can control music playback.*")
+        return await message.reply_text("❌ <b>ᴏɴʟʏ ᴀᴅᴍɪɴs ᴄᴀɴ ᴄᴏɴᴛʀᴏʟ ᴍᴜsɪᴄ.</b>")
 
     if await call_manager.resume(chat_id):
-        await message.reply_text("▶️ **Playback has been resumed.**")
+        await message.reply_text("▶️ <b>sᴛʀᴇᴀᴍ ʀᴇsᴜᴍᴇᴅ.</b>")
     else:
-        await message.reply_text("❌ *No paused stream found to resume.*")
+        await message.reply_text("❌ <b>ɴᴏ ᴘᴀᴜsᴇᴅ sᴛʀᴇᴀᴍ ғᴏᴜɴᴅ.</b>")
 
 
 @app.on_message(filters.command(["skip", "next"]))
 async def skip_command_handler(client, message: Message):
     chat_id = message.chat.id
     if not await is_admin(chat_id, message.from_user.id):
-        return await message.reply_text("❌ *Only admins can skip songs.*")
+        return await message.reply_text("❌ <b>ᴏɴʟʏ ᴀᴅᴍɪɴs ᴄᴀɴ sᴋɪᴘ sᴏɴɢs.</b>")
 
     next_track = await call_manager.skip(chat_id)
     if next_track:
         title = next_track.get("title", "Track")
-        await message.reply_text(
-            f"⏭ **Skipped! Now playing:**\n`{title}`",
-            reply_markup=player_markup(chat_id),
+        dur_str = next_track.get("duration_str", "")
+        url = next_track.get("url", "")
+        requester = next_track.get("requester", message.from_user.mention if message.from_user else "Admin")
+        caption = (
+            f"➲ <b>sᴋɪᴘᴘᴇᴅ! sᴛᴀʀᴛᴇᴅ sᴛʀᴇᴀᴍɪɴɢ</b>\n\n"
+            f"<b>‣ ᴛɪᴛʟᴇ :</b> <a href=\"{url}\">{title[:35]}</a>\n"
+            f"<b>‣ ᴅᴜʀᴀᴛɪᴏɴ :</b> {dur_str}\n"
+            f"<b>‣ ʀᴇǫᴜᴇsᴛᴇᴅ ʙʏ :</b> {requester}"
         )
+        try:
+            thumb_path = await get_thumb(
+                videoid=next_track.get("id", "track"),
+                title=title,
+                duration=dur_str,
+                channel=next_track.get("channel", ""),
+                thumb_url=next_track.get("thumbnail", ""),
+            )
+            if thumb_path:
+                return await message.reply_photo(
+                    photo=thumb_path,
+                    caption=caption,
+                    reply_markup=player_markup(chat_id),
+                )
+        except Exception:
+            pass
+        await message.reply_text(caption, reply_markup=player_markup(chat_id))
     else:
-        await message.reply_text("⏹ **Queue ended. Voice chat session closed.**")
+        await message.reply_text("⏹ <b>ǫᴜᴇᴜᴇ ᴇɴᴅᴇᴅ. ᴠᴏɪᴄᴇ ᴄʜᴀᴛ ᴄʟᴏsᴇᴅ.</b>")
 
 
 @app.on_message(filters.command(["stop", "end"]))
 async def stop_command_handler(client, message: Message):
     chat_id = message.chat.id
     if not await is_admin(chat_id, message.from_user.id):
-        return await message.reply_text("❌ *Only admins can stop playback.*")
+        return await message.reply_text("❌ <b>ᴏɴʟʏ ᴀᴅᴍɪɴs ᴄᴀɴ sᴛᴏᴘ ᴘʟᴀʏʙᴀᴄᴋ.</b>")
 
     await call_manager.stop(chat_id)
-    await message.reply_text("⏹ **Music stopped and voice chat left.**")
+    await message.reply_text("⏹ <b>sᴛʀᴇᴀᴍ sᴛᴏᴘᴘᴇᴅ & ᴠᴏɪᴄᴇ ᴄʜᴀᴛ ʟᴇғᴛ.</b>")
 
 
 @app.on_message(filters.command(["queue", "q"]))
@@ -75,60 +98,66 @@ async def queue_command_handler(client, message: Message):
     queue = queue_manager.get_queue(chat_id)
 
     if not current and not queue:
-        return await message.reply_text("📭 **Queue is currently empty.**")
+        return await message.reply_text("📭 <b>ǫᴜᴇᴜᴇ ɪs ᴄᴜʀʀᴇɴᴛʟʏ ᴇᴍᴘᴛʏ.</b>")
 
-    text = "📜 **Current Stream Queue:**\n\n"
+    text = "📜 <b>ᴄᴜʀʀᴇɴᴛ sᴛʀᴇᴀᴍ ǫᴜᴇᴜᴇ :</b>\n\n"
     if current:
-        text += f"▶️ **Now Playing:** `{current.get('title')}` ({format_duration(current.get('duration', 0))})\n"
-        text += f"👤 *Requested by:* {current.get('requester', 'Admin')}\n\n"
+        url = current.get("url", "")
+        title = current.get("title", "Track")[:35]
+        text += f"▶️ <b>ɴᴏᴡ ᴘʟᴀʏɪɴɢ :</b> <a href=\"{url}\">{title}</a>\n"
+        text += f"⏱ <b>ᴅᴜʀᴀᴛɪᴏɴ :</b> {current.get('duration_str') or format_duration(current.get('duration', 0))}\n"
+        text += f"👤 <b>ʀᴇǫᴜᴇsᴛᴇᴅ ʙʏ :</b> {current.get('requester', 'Admin')}\n\n"
 
     if queue:
-        text += "📋 **Upcoming Tracks:**\n"
+        text += "📋 <b>ᴜᴘᴄᴏᴍɪɴɢ ᴛʀᴀᴄᴋs :</b>\n"
         for i, t in enumerate(queue[:10], 1):
-            text += f"`{i}.` `{t.get('title')[:35]}` ({format_duration(t.get('duration', 0))})\n"
+            t_url = t.get("url", "")
+            t_title = t.get("title", "Track")[:30]
+            t_dur = t.get("duration_str") or format_duration(t.get("duration", 0))
+            text += f"<b>{i}.</b> <a href=\"{t_url}\">{t_title}</a> (<code>{t_dur}</code>)\n"
         if len(queue) > 10:
-            text += f"\n... and **{len(queue) - 10}** more tracks."
+            text += f"\n... ᴀɴᴅ <b>{len(queue) - 10}</b> ᴍᴏʀᴇ ᴛʀᴀᴄᴋs."
     else:
-        text += "📋 *No more tracks in queue.*"
+        text += "📋 <i>ɴᴏ ᴍᴏʀᴇ ᴛʀᴀᴄᴋs ɪɴ ǫᴜᴇᴜᴇ.</i>"
 
-    await message.reply_text(text, reply_markup=close_markup())
+    await message.reply_text(text, reply_markup=close_markup(), disable_web_page_preview=True)
 
 
 @app.on_message(filters.command(["loop"]))
 async def loop_command_handler(client, message: Message):
     chat_id = message.chat.id
     if not await is_admin(chat_id, message.from_user.id):
-        return await message.reply_text("❌ *Only admins can set loop.*")
+        return await message.reply_text("❌ <b>ᴏɴʟʏ ᴀᴅᴍɪɴs ᴄᴀɴ sᴇᴛ ʟᴏᴏᴘ.</b>")
 
     if len(message.command) < 2:
         curr = queue_manager.get_loop(chat_id)
         return await message.reply_text(
-            f"🔁 **Loop Status:** `{'Enabled (' + str(curr) + 'x)' if curr else 'Disabled'}`\n\n"
-            f"Usage: `/loop 3` (loop 3 times) or `/loop disable`."
+            f"🔁 <b>ʟᴏᴏᴘ sᴛᴀᴛᴜs :</b> <code>{'ᴇɴᴀʙʟᴇᴅ (' + str(curr) + 'x)' if curr else 'ᴅɪsᴀʙʟᴇᴅ'}</code>\n\n"
+            f"<b>ᴜsᴀɢᴇ :</b> <code>/loop 3</code> ᴏʀ <code>/loop disable</code>."
         )
 
     arg = message.command[1].lower()
     if arg in ("disable", "off", "0"):
         queue_manager.set_loop(chat_id, 0)
-        await message.reply_text("🔁 **Track loop disabled.**")
+        await message.reply_text("🔁 <b>ᴛʀᴀᴄᴋ ʟᴏᴏᴘ ᴅɪsᴀʙʟᴇᴅ.</b>")
     elif arg.isdigit():
         count = int(arg)
         queue_manager.set_loop(chat_id, count)
-        await message.reply_text(f"🔁 **Loop enabled for {count} playback(s).**")
+        await message.reply_text(f"🔁 <b>ʟᴏᴏᴘ ᴇɴᴀʙʟᴇᴅ ғᴏʀ {count} ᴘʟᴀʏʙᴀᴄᴋ(s).</b>")
     else:
-        await message.reply_text("ℹ️ *Please provide a valid loop number or 'disable'.*")
+        await message.reply_text("ℹ️ <b>ᴘʟᴇᴀsᴇ ᴘʀᴏᴠɪᴅᴇ ᴀ ᴠᴀʟɪᴅ ɴᴜᴍʙᴇʀ ᴏʀ 'disable'.</b>")
 
 
 @app.on_message(filters.command(["shuffle"]))
 async def shuffle_command_handler(client, message: Message):
     chat_id = message.chat.id
     if not await is_admin(chat_id, message.from_user.id):
-        return await message.reply_text("❌ *Only admins can shuffle the queue.*")
+        return await message.reply_text("❌ <b>ᴏɴʟʏ ᴀᴅᴍɪɴs ᴄᴀɴ sʜᴜғғʟᴇ ᴛʜᴇ ǫᴜᴇᴜᴇ.</b>")
 
     if queue_manager.shuffle(chat_id):
-        await message.reply_text("🔀 **Queue has been shuffled!**")
+        await message.reply_text("🔀 <b>ǫᴜᴇᴜᴇ ʜᴀs ʙᴇᴇɴ sʜᴜғғʟᴇᴅ!</b>")
     else:
-        await message.reply_text("❌ *Queue must have at least 2 upcoming tracks to shuffle.*")
+        await message.reply_text("❌ <b>ᴀᴛ ʟᴇᴀsᴛ 2 ᴜᴘᴄᴏᴍɪɴɢ ᴛʀᴀᴄᴋs ɴᴇᴇᴅᴇᴅ ᴛᴏ sʜᴜғғʟᴇ.</b>")
 
 
 # --- Inline Callbacks for Player Controller Buttons ---
@@ -140,31 +169,56 @@ async def player_callback_handler(client, query: CallbackQuery):
     chat_id = int(parts[2])
 
     if not await is_admin(chat_id, query.from_user.id):
-        return await query.answer("❌ You must be an admin to use player controls.", show_alert=True)
+        return await query.answer("❌ ᴏɴʟʏ ᴀᴅᴍɪɴs ᴄᴀɴ ᴄᴏɴᴛʀᴏʟ ᴘʟᴀʏᴇʀ.", show_alert=True)
 
     if action == "pause":
         if await call_manager.pause(chat_id):
-            await query.answer("⏸ Paused playback.")
+            await query.answer("⏸ ᴘᴀᴜsᴇᴅ.")
         else:
-            await query.answer("No active stream to pause.", show_alert=True)
+            await query.answer("ɴᴏ ᴀᴄᴛɪᴠᴇ sᴛʀᴇᴀᴍ ᴛᴏ ᴘᴀᴜsᴇ.", show_alert=True)
 
     elif action == "resume":
         if await call_manager.resume(chat_id):
-            await query.answer("▶️ Resumed playback.")
+            await query.answer("▶️ ʀᴇsᴜᴍᴇᴅ.")
         else:
-            await query.answer("No paused stream to resume.", show_alert=True)
+            await query.answer("ɴᴏ ᴘᴀᴜsᴇᴅ sᴛʀᴇᴀᴍ ᴛᴏ ʀᴇsᴜᴍᴇ.", show_alert=True)
 
     elif action == "skip":
-        await query.answer("⏭ Skipping track...")
+        await query.answer("⏭ sᴋɪᴘᴘɪɴɢ...")
         next_track = await call_manager.skip(chat_id)
         if next_track:
-            await query.message.reply_text(f"⏭ **Skipped! Now playing:**\n`{next_track.get('title')}`")
+            title = next_track.get("title", "Track")
+            dur_str = next_track.get("duration_str", "")
+            url = next_track.get("url", "")
+            caption = (
+                f"➲ <b>sᴋɪᴘᴘᴇᴅ! sᴛᴀʀᴛᴇᴅ sᴛʀᴇᴀᴍɪɴɢ</b>\n\n"
+                f"<b>‣ ᴛɪᴛʟᴇ :</b> <a href=\"{url}\">{title[:35]}</a>\n"
+                f"<b>‣ ᴅᴜʀᴀᴛɪᴏɴ :</b> {dur_str}\n"
+                f"<b>‣ ʀᴇǫᴜᴇsᴛᴇᴅ ʙʏ :</b> {query.from_user.mention}"
+            )
+            try:
+                thumb_path = await get_thumb(
+                    videoid=next_track.get("id", "track"),
+                    title=title,
+                    duration=dur_str,
+                    channel=next_track.get("channel", ""),
+                    thumb_url=next_track.get("thumbnail", ""),
+                )
+                if thumb_path:
+                    return await query.message.reply_photo(
+                        photo=thumb_path,
+                        caption=caption,
+                        reply_markup=player_markup(chat_id),
+                    )
+            except Exception:
+                pass
+            await query.message.reply_text(caption, reply_markup=player_markup(chat_id))
         else:
-            await query.message.reply_text("⏹ **Queue ended. Voice chat closed.**")
+            await query.message.reply_text("⏹ <b>ǫᴜᴇᴜᴇ ᴇɴᴅᴇᴅ. ᴠᴏɪᴄᴇ ᴄʜᴀᴛ ᴄʟᴏsᴇᴅ.</b>")
 
     elif action == "stop":
         await call_manager.stop(chat_id)
-        await query.answer("⏹ Music stopped.", show_alert=True)
+        await query.answer("⏹ sᴛʀᴇᴀᴍ sᴛᴏᴘᴘᴇᴅ.", show_alert=True)
         try:
             await query.message.delete()
         except Exception:
@@ -173,11 +227,11 @@ async def player_callback_handler(client, query: CallbackQuery):
     elif action == "queue":
         current = queue_manager.get_current(chat_id)
         q = queue_manager.get_queue(chat_id)
-        status = f"Playing: {current.get('title', 'None')[:25]} | Upcoming: {len(q)}" if current else "Queue empty"
+        status = f"Playing: {current.get('title', 'None')[:25]} | Queue: {len(q)}" if current else "Queue empty"
         await query.answer(status, show_alert=True)
 
     elif action == "shuffle":
         if queue_manager.shuffle(chat_id):
-            await query.answer("🔀 Queue shuffled!")
+            await query.answer("🔀 ǫᴜᴇᴜᴇ sʜᴜғғʟᴇᴅ!")
         else:
-            await query.answer("Not enough songs in queue to shuffle.", show_alert=True)
+            await query.answer("ɴᴏᴛ ᴇɴᴏᴜɢʜ sᴏɴɢs ɪɴ ǫᴜᴇᴜᴇ.", show_alert=True)

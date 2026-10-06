@@ -1,0 +1,49 @@
+try:
+    from stdgram import filters
+    from stdgram.types import Message
+except ImportError:
+    from pyrogram import filters
+    from pyrogram.types import Message
+
+from StdMusic import app
+from ..misc import is_admin, add_auth_user, remove_auth_user
+
+
+@app.on_message(filters.command(["auth"]))
+async def auth_user_handler(client, message: Message):
+
+    chat_id = message.chat.id
+    if not await is_admin(chat_id, message.from_user.id):
+        return await message.reply_text("❌ *Only admins can authorize users.*")
+
+    user_id = None
+    if message.reply_to_message and message.reply_to_message.from_user:
+        user_id = message.reply_to_message.from_user.id
+    elif len(message.command) > 1 and message.command[1].isdigit():
+        user_id = int(message.command[1])
+
+    if not user_id:
+        return await message.reply_text("ℹ️ *Reply to a user or provide user ID to authorize.*")
+
+    add_auth_user(chat_id, user_id)
+    await message.reply_text(f"✅ **User {user_id} is now authorized to control music.**")
+
+
+@app.on_message(filters.command(["unauth"]))
+async def unauth_user_handler(client, message: Message):
+
+    chat_id = message.chat.id
+    if not await is_admin(chat_id, message.from_user.id):
+        return await message.reply_text("❌ *Only admins can de-authorize users.*")
+
+    user_id = None
+    if message.reply_to_message and message.reply_to_message.from_user:
+        user_id = message.reply_to_message.from_user.id
+    elif len(message.command) > 1 and message.command[1].isdigit():
+        user_id = int(message.command[1])
+
+    if not user_id:
+        return await message.reply_text("ℹ️ *Reply to a user or provide user ID to de-authorize.*")
+
+    remove_auth_user(chat_id, user_id)
+    await message.reply_text(f"🚫 **User {user_id} authorization revoked.**")

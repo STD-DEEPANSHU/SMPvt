@@ -1,12 +1,18 @@
-FROM nikolaik/python-nodejs:python3.9-nodejs17
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends ffmpeg \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
-COPY . /app
+FROM python:3.11-slim
+
 WORKDIR /app
-RUN pip3 install -U -r requirements.txt
 
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ffmpeg \
+    git \
+    gcc \
+    python3-dev \
+    && rm -rf /var/lib/apt/lists/*
 
+COPY requirements.txt .
+RUN pip install --no-cache-dir -U pip && \
+    pip install --no-cache-dir -r requirements.txt
 
-CMD bash fallen
+COPY . .
+
+CMD ["python3", "-m", "StdMusic"]

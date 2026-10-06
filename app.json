@@ -1,83 +1,59 @@
 {
-  "name": "sᴘɪᴅᴇʏ ᴍᴜsɪᴄ",
-  "logo": "https://telegra.ph/file/89cbc8b8760b6abff430f.jpg",
-  "description": "A Fast & Powerful VC Player bot to play songs in Telegram Video Chat written in Python with the help of Pyrogram & PyTg-Calls.",
-  "keywords": ["music", "voicechat", "python", "telegram-bot", "pyrogram", "telegram", "fallen"],
-  "repository": "https://github.com/STD-DEEPANSHU/SMPvt",
+  "name": "StdMusic",
+  "description": "High-performance Telegram Voice Chat Music Bot powered by StdGram, PyTgCalls, and StdAPI.",
+  "logo": "https://graph.org/file/f4b16beae1579beab1479.jpg",
+  "keywords": ["telegram", "music", "voicechat", "pytgcalls", "stdgram", "stdapi", "bot"],
+  "repository": "https://github.com/STD-DEEPANSHU/StdMusic",
+  "website": "https://github.com/STD-DEEPANSHU/StdMusic",
+  "success_url": "https://t.me/TeamStdNetwork",
   "stack": "container",
   "env": {
     "API_ID": {
-      "description": "Get this value from https://my.telegram.org/apps",
-      "value": "",
+      "description": "Your Telegram API ID from https://my.telegram.org",
       "required": true
     },
     "API_HASH": {
-      "description": "Get this value from https://my.telegram.org/apps",
-      "value": "",
+      "description": "Your Telegram API Hash from https://my.telegram.org",
       "required": true
     },
     "BOT_TOKEN": {
-      "description": "A Bot's token from Botfather",
-      "value": "",
-      "required": true
-    },
-    "LOGGER_ID": {
-      "description": "Chat id of a group where you'll get to know that your bot got started.",
-      "required": true,
-      "value": ""
-    },
-    "MONGO_DB_URI": {
-      "description": "A MongoDB Cloud database url from cloud.mongodb.com",
-      "value": "",
+      "description": "Your Bot Token from @BotFather",
       "required": true
     },
     "OWNER_ID": {
-      "description": "Telegram id of the person who will known as owner of the bot.",
-      "required": true,
-      "value": ""
+      "description": "Telegram user ID of the Bot Owner",
+      "required": true
     },
-    "START_IMG": {
-      "description": "Telegraph link of an image which you wanna set as start pic of the bot.",
-      "required": true,
-      "value": ""
-    },
-    "STRING_SESSION": {
-      "description": "Pyrogram String Session of Assistant Account",
-      "required": true,
-      "value": ""
+    "SESSION_STRING": {
+      "description": "Pyrogram / StdGram session string for assistant userbot",
+      "required": true
     },
     "SUDO_USERS": {
-      "description": "User IDs of the users who will counted as admin everywhere (if more than one separate them by space).",
-      "required": false,
-      "value": ""
+      "description": "Space-separated user IDs of Sudo Admins",
+      "required": false
     },
-    "SUPPORT_CHAT": {
-      "description": "Support Group Link of your bot, Must start with https://t.me/",
-      "required": false,
-      "value": "https://t.me/DevilsHeavenMF"
+    "MONGO_URL": {
+      "description": "MongoDB connection string URI",
+      "required": false
     },
-    "SUPPORT_CHANNEL": {
-      "description": "Support Channel Link of your bot, Your link must start with https://t.me/",
-      "required": false,
-      "value": "https://t.me/DevilsHeavenMF"
+    "DURATION_LIMIT": {
+      "description": "Maximum song duration in seconds (default 3600)",
+      "value": "3600",
+      "required": false
     }
   },
   "buildpacks": [
-        {
-            "url": "heroku/python"
-        },
-        {
-            "url": "heroku/nodejs"
-        },
-        {
-            "url": "https://github.com/jonathanong/heroku-buildpack-ffmpeg-latest.git"
-        }
-    ],
-    "formation": {
-        "worker": {
-            "quantity": 1,
-            "size": "free"
-        }
+    {
+      "url": "heroku/python"
     },
-    "stack": "container"
+    {
+      "url": "https://github.com/jonathanong/heroku-buildpack-ffmpeg-latest.git"
+    }
+  ],
+  "formation": {
+    "worker": {
+      "quantity": 1,
+      "size": "eco"
+    }
+  }
 }

@@ -1,8 +1,4 @@
-try:
-    from stdgram.types import InlineKeyboardMarkup, InlineKeyboardButton
-except ImportError:
-    from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-
+from stdgram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from config import SUPPORT_CHAT, SUPPORT_CHANNEL
 
 
@@ -29,7 +25,7 @@ def start_panel(bot_username: str) -> InlineKeyboardMarkup:
 
 
 def player_markup(chat_id: int) -> InlineKeyboardMarkup:
-    """Stream playback controller buttons in sleek AnonX & Daxx styling."""
+    """Stream playback controller buttons in sleek styling."""
     return InlineKeyboardMarkup(
         [
             [
@@ -56,6 +52,10 @@ def help_panel() -> InlineKeyboardMarkup:
             [
                 InlineKeyboardButton(text="▶️ ᴘʟᴀʏʙᴀᴄᴋ", callback_data="help_play"),
                 InlineKeyboardButton(text="🎛 ᴄᴏɴᴛʀᴏʟs", callback_data="help_controls"),
+            ],
+            [
+                InlineKeyboardButton(text="🔊 ʙᴀss & ғɪʟᴛᴇʀs", callback_data="help_bass"),
+                InlineKeyboardButton(text="📥 ᴅᴏᴡɴʟᴏᴀᴅs", callback_data="help_download"),
             ],
             [
                 InlineKeyboardButton(text="⚙️ ᴀᴅᴍɪɴ & sᴘᴇᴇᴅ", callback_data="help_admin"),

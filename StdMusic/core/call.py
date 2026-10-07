@@ -35,7 +35,7 @@ class CallManager:
         if not self.calls:
             raise RuntimeError("Assistant userbot is not configured. Please set SESSION_STRING.")
 
-        stream_url = await music_engine.get_stream_url(track)
+        stream_url = await music_engine.get_stream_url(track, is_video=is_video)
         stream = music_engine.create_media_stream(stream_url, is_video=is_video)
 
         if await self.is_active(chat_id):

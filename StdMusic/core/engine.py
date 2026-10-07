@@ -122,19 +122,23 @@ class StdMusicEngine:
         }
 
 
-    async def get_stream_url(self, item: Dict[str, Any]) -> str:
+    async def get_stream_url(self, item: Dict[str, Any], is_video: bool = False) -> str:
         """Resolve playable direct stream URL for PyTgCalls."""
-        if item.get("stream_url"):
+        if is_video and item.get("video_stream_url"):
+            return item["video_stream_url"]
+        if not is_video and item.get("stream_url"):
             return item["stream_url"]
 
         url = item.get("url", "")
         if self.local_engine and url:
             try:
                 res = await self.local_engine.extract(url)
-                stream_url = res.best_audio_url or res.best_video_url
-                if stream_url:
-                    item["stream_url"] = stream_url
-                    return stream_url
+                if is_video and res.best_video_url:
+                    item["video_stream_url"] = res.best_video_url
+                    return res.best_video_url
+                elif res.best_audio_url:
+                    item["stream_url"] = res.best_audio_url
+                    return res.best_audio_url
             except Exception as e:
                 logger.error(f"Stream resolution error: {e}")
 

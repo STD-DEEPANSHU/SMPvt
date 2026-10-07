@@ -3,10 +3,7 @@ import importlib
 import logging
 import sys
 
-try:
-    from stdgram import idle
-except ImportError:
-    from pyrogram import idle
+from stdgram import idle
 
 from StdMusic import app, userbot, pytgcalls, BOT_NAME, logger
 from StdMusic.plugins import ALL_PLUGINS

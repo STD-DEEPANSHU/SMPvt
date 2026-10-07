@@ -2,12 +2,8 @@ import asyncio
 import logging
 from typing import Optional
 
-try:
-    from stdgram import filters
-    from stdgram.types import Message
-except ImportError:
-    from pyrogram import filters
-    from pyrogram.types import Message
+from stdgram import filters
+from stdgram.types import Message
 
 from StdMusic import app, userbot, BOT_NAME
 from ..core.engine import music_engine

@@ -1,11 +1,7 @@
 import logging
 
-try:
-    from stdgram import filters
-    from stdgram.types import Message, CallbackQuery
-except ImportError:
-    from pyrogram import filters
-    from pyrogram.types import Message, CallbackQuery
+from stdgram import filters
+from stdgram.types import Message, CallbackQuery
 
 from StdMusic import app
 from ..core.call import call_manager

@@ -5,5 +5,6 @@ venv/
 *.session
 raw_files/
 downloads/
+cache/
 __pycache__/
 *.session-journal

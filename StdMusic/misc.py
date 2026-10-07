@@ -1,10 +1,7 @@
 from typing import Set
 from config import SUDO_USERS, OWNER_ID
 
-try:
-    from stdgram.enums import ChatMemberStatus
-except ImportError:
-    from pyrogram.enums import ChatMemberStatus
+from stdgram.enums import ChatMemberStatus
 
 from StdMusic import app
 

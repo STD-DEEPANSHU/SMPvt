@@ -1,9 +1,5 @@
-try:
-    from stdgram import filters
-    from stdgram.types import Message, CallbackQuery
-except ImportError:
-    from pyrogram import filters
-    from pyrogram.types import Message, CallbackQuery
+from stdgram import filters
+from stdgram.types import Message, CallbackQuery
 
 from StdMusic import app, BOT_NAME, BOT_USERNAME
 from ..utils.inline import start_panel, help_panel, close_markup
@@ -23,6 +19,8 @@ async def start_command_handler(client, message: Message):
             f"• ᴄʀʏsᴛᴀʟ ᴄʟᴇᴀʀ 48ᴋʜᴢ ᴀᴜᴅɪᴏ sᴛʀᴇᴀᴍɪɴɢ\n"
             f"• ɪɴsᴛᴀɴᴛ ʜɪɢʜ-ᴅᴇғɪɴɪᴛɪᴏɴ ᴠɪᴅᴇᴏ sᴛʀᴇᴀᴍs (<code>/vplay</code>)\n"
             f"• ᴀᴇsᴛʜᴇᴛɪᴄ ᴅʏɴᴀᴍɪᴄ ᴛʜᴜᴍʙɴᴀɪʟ ɢᴇɴᴇʀᴀᴛɪᴏɴ\n"
+            f"• ᴀᴜᴅɪᴏ ʙᴀss ʙᴏᴏsᴛ & ғɪʟᴛᴇʀs (<code>/bass</code>)\n"
+            f"• ɪɴsᴛᴀɴᴛ ʏᴏᴜᴛᴜʙᴇ ᴅᴏᴡɴʟᴏᴀᴅᴇʀ (<code>/song</code>, <code>/video</code>)\n"
             f"• sᴍᴏᴏᴛʜ ǫᴜᴇᴜᴇ ᴍᴀɴᴀɢᴇᴍᴇɴᴛ & ʟᴏᴏᴘ ᴍᴏᴅᴇ\n"
             f"• ᴢᴇʀᴏ-ʟᴀɢ ᴠᴏɪᴄᴇ ᴄʜᴀᴛ sʏɴᴄ\n\n"
             f"ᴄʟɪᴄᴋ ᴛʜᴇ ʙᴜᴛᴛᴏɴ ʙᴇʟᴏᴡ ᴛᴏ ᴀᴅᴅ ᴍᴇ ᴛᴏ ʏᴏᴜʀ ɢʀᴏᴜᴘ!"
@@ -77,6 +75,19 @@ async def help_callback_handler(client, query: CallbackQuery):
             "• <code>/loop [1-5 / disable]</code> — ʟᴏᴏᴘ ᴄᴜʀʀᴇɴᴛ ᴛʀᴀᴄᴋ.\n"
             "• <code>/shuffle</code> — sʜᴜғғʟᴇ ǫᴜᴇᴜᴇ ᴛʀᴀᴄᴋs."
         )
+    elif data == "help_bass":
+        text = (
+            "🔊 <b>ʙᴀss & ᴀᴜᴅɪᴏ ғɪʟᴛᴇʀs :</b>\n\n"
+            "• <code>/bass</code> — ɪɴᴄʀᴇᴀsᴇ ᴍᴜsɪᴄ ʙᴀss (ʀᴇᴘʟʏ ᴛᴏ ᴀᴜᴅɪᴏ).\n"
+            "• <code>/loudly</code> — ɪɴᴄʀᴇᴀsᴇ ᴍᴜsɪᴄ ᴠᴏʟᴜᴍᴇ (ʀᴇᴘʟʏ ᴛᴏ ᴀᴜᴅɪᴏ).\n"
+            "• <code>/mono</code> — ᴄᴏɴᴠᴇʀᴛ sᴛᴇʀᴇᴏ ᴛᴏ ᴍᴏɴᴏ (ʀᴇᴘʟʏ ᴛᴏ ᴀᴜᴅɪᴏ)."
+        )
+    elif data == "help_download":
+        text = (
+            "📥 <b>ᴍᴇᴅɪᴀ ᴅᴏᴡɴʟᴏᴀᴅᴇʀ :</b>\n\n"
+            "• <code>/song [sᴏɴɢ ɴᴀᴍᴇ / ʏᴛ ʟɪɴᴋ]</code> — ᴅᴏᴡɴʟᴏᴀᴅ ᴀᴜᴅɪᴏ ᴍᴘ3.\n"
+            "• <code>/video [ᴠɪᴅᴇᴏ ɴᴀᴍᴇ / ʏᴛ ʟɪɴᴋ]</code> — ᴅᴏᴡɴʟᴏᴀᴅ ᴠɪᴅᴇᴏ ᴍᴘ4."
+        )
     elif data == "help_admin":
         text = (
             "⚙️ <b>ᴀᴅᴍɪɴ ᴄᴏᴍᴍᴀɴᴅs :</b>\n\n"
@@ -90,13 +101,16 @@ async def help_callback_handler(client, query: CallbackQuery):
             "• <code>/ping</code> — ᴄʜᴇᴄᴋ ʙᴏᴛ ʟᴀᴛᴇɴᴄʏ & sʏsᴛᴇᴍ sᴛᴀᴛs.\n"
             "• <code>/start</code> — ʙᴏᴛ sᴛᴀʀᴛ ᴍᴇɴᴜ."
         )
-    else:  # help_back
+    else:  # help_back or help_menu
         text = (
             f"📖 <b>{BOT_NAME} ᴄᴏᴍᴍᴀɴᴅ ᴄᴇɴᴛᴇʀ</b>\n\n"
             f"sᴇʟᴇᴄᴛ ᴀ ᴄᴀᴛᴇɢᴏʀʏ ʙᴇʟᴏᴡ ᴛᴏ ᴇxᴘʟᴏʀᴇ ᴀᴠᴀɪʟᴀʙʟᴇ ᴄᴏᴍᴍᴀɴᴅs:"
         )
 
-    await query.message.edit_text(text, reply_markup=help_panel())
+    try:
+        await query.message.edit_text(text, reply_markup=help_panel())
+    except Exception:
+        pass
     await query.answer()
 
 

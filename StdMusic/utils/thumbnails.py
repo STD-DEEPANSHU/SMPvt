@@ -1,51 +1,47 @@
 import os
 import re
+import random
 import aiofiles
 import aiohttp
-from PIL import Image, ImageDraw, ImageEnhance, ImageFilter, ImageFont, ImageOps
+import numpy as np
+from PIL import Image, ImageFont, ImageDraw, ImageFilter
 
 ASSETS_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "assets")
 CACHE_DIR = os.path.join(os.getcwd(), "cache")
 os.makedirs(CACHE_DIR, exist_ok=True)
 
-FONT_PATH = os.path.join(ASSETS_DIR, "font.ttf")
-FONT2_PATH = os.path.join(ASSETS_DIR, "font2.ttf")
-FONT3_PATH = os.path.join(ASSETS_DIR, "font3.ttf")
-PLAY_ICONS_PATH = os.path.join(ASSETS_DIR, "play_icons.png")
+BLACK_PATH = os.path.join(ASSETS_DIR, "black.jpg")
+MUSIC_PNG_PATH = os.path.join(ASSETS_DIR, "music.png")
+ROBOT_FONT_PATH = os.path.join(ASSETS_DIR, "robot.otf")
+INFO_FONT_PATH = os.path.join(ASSETS_DIR, "iromusic.ttf")
 
 
-def _truncate_title(text: str) -> list:
-    """Break title into two well-balanced lines."""
-    words = text.split()
+def make_col():
+    """Generate vibrant RGB accent color for player frame."""
+    return (
+        random.randint(60, 255),
+        random.randint(60, 255),
+        random.randint(60, 255),
+    )
+
+
+def change_image_size(max_width: int, max_height: int, image: Image.Image) -> Image.Image:
+    width_ratio = max_width / image.size[0]
+    height_ratio = max_height / image.size[1]
+    new_width = int(width_ratio * image.size[0])
+    new_height = int(height_ratio * image.size[1])
+    return image.resize((new_width, new_height), Image.LANCZOS)
+
+
+def truncate_title(text: str) -> list:
+    words = text.split(" ")
     line1, line2 = "", ""
     for w in words:
-        if len(line1) + len(w) + 1 <= 28:
-            line1 += (" " if line1 else "") + w
-        elif len(line2) + len(w) + 1 <= 28:
-            line2 += (" " if line2 else "") + w
+        if len(line1) + len(w) < 27:
+            line1 += " " + w
+        elif len(line2) + len(w) < 25:
+            line2 += " " + w
     return [line1.strip() or text[:25], line2.strip()]
-
-
-def _crop_center_circle(img: Image.Image, output_size: int = 400, border: int = 15) -> Image.Image:
-    """Crop center circle with crisp white border ring."""
-    min_dim = min(img.size[0], img.size[1])
-    left = (img.size[0] - min_dim) // 2
-    top = (img.size[1] - min_dim) // 2
-    img_square = img.crop((left, top, left + min_dim, top + min_dim))
-    img_square = img_square.resize((output_size - 2 * border, output_size - 2 * border), Image.LANCZOS)
-
-    # Inner circular mask
-    mask_inner = Image.new("L", (output_size - 2 * border, output_size - 2 * border), 0)
-    ImageDraw.Draw(mask_inner).ellipse((0, 0, output_size - 2 * border, output_size - 2 * border), fill=255)
-
-    final_img = Image.new("RGBA", (output_size, output_size), (255, 255, 255, 255))
-    final_img.paste(img_square, (border, border), mask_inner)
-
-    # Outer border mask
-    mask_outer = Image.new("L", (output_size, output_size), 0)
-    ImageDraw.Draw(mask_outer).ellipse((0, 0, output_size, output_size), fill=255)
-
-    return Image.composite(final_img, Image.new("RGBA", (output_size, output_size), (0, 0, 0, 0)), mask_outer)
 
 
 async def get_thumb(
@@ -57,11 +53,11 @@ async def get_thumb(
     thumb_url: str = "",
 ) -> str:
     """
-    Generate dynamic 1280x720 music thumbnail matching DaxxMusic & AnonX caliber.
+    Generate high-aesthetic circular music thumbnail matching IroMusic caliber.
     Returns path to cached PNG image.
     """
     clean_id = re.sub(r"[^\w\-]", "", str(videoid))[:20] or "track"
-    cache_path = os.path.join(CACHE_DIR, f"{clean_id}_v4.png")
+    cache_path = os.path.join(CACHE_DIR, f"{clean_id}_iro.png")
 
     if os.path.isfile(cache_path) and os.path.getsize(cache_path) > 1000:
         return cache_path
@@ -71,12 +67,11 @@ async def get_thumb(
         if len(clean_id) == 11:
             thumb_url = f"https://img.youtube.com/vi/{clean_id}/maxresdefault.jpg"
         else:
-            thumb_url = "https://telegra.ph/file/2034963e00fcadfb845ff.jpg"
+            thumb_url = "https://graph.org/file/bf1dae161eaca5cefdbd2.jpg"
 
     raw_thumb_path = os.path.join(CACHE_DIR, f"raw_{clean_id}.jpg")
 
     async with aiohttp.ClientSession() as session:
-        # Download primary thumbnail URL
         downloaded = False
         try:
             async with session.get(thumb_url, timeout=10) as resp:
@@ -87,7 +82,6 @@ async def get_thumb(
         except Exception:
             pass
 
-        # Fallback to hqdefault if maxresdefault 404s
         if not downloaded and len(clean_id) == 11:
             fallback_url = f"https://img.youtube.com/vi/{clean_id}/hqdefault.jpg"
             try:
@@ -101,75 +95,94 @@ async def get_thumb(
 
     try:
         if os.path.isfile(raw_thumb_path):
-            youtube = Image.open(raw_thumb_path)
+            image = Image.open(raw_thumb_path)
         else:
-            youtube = Image.new("RGB", (1280, 720), (25, 27, 42))
-    except Exception:
-        youtube = Image.new("RGB", (1280, 720), (25, 27, 42))
+            image = Image.new("RGB", (1280, 720), (25, 27, 42))
 
-    try:
-        # 1. Background blurred and darkened
-        bg = ImageOps.fit(youtube, (1280, 720)).convert("RGBA")
-        bg = bg.filter(ImageFilter.BoxBlur(20))
-        bg = ImageEnhance.Brightness(bg).enhance(0.55)
+        black = (
+            Image.open(BLACK_PATH)
+            if os.path.isfile(BLACK_PATH)
+            else Image.new("RGB", (1280, 720), (10, 10, 15))
+        )
+        img_frame = (
+            Image.open(MUSIC_PNG_PATH)
+            if os.path.isfile(MUSIC_PNG_PATH)
+            else Image.new("RGBA", (1280, 720), (0, 0, 0, 0))
+        )
 
-        # 2. Fonts
+        image5 = change_image_size(1280, 720, img_frame)
+        image1 = change_image_size(1280, 720, image)
+        image11 = change_image_size(1280, 720, image)
+
+        image1 = image11.filter(ImageFilter.BoxBlur(20))
+        image2 = Image.blend(image1, black, 0.6)
+
+        im = image5.convert("RGBA")
+        color = make_col()
+
+        data = np.array(im)
+        red, green, blue, alpha = data.T
+
+        white_areas = (red == 255) & (blue == 255) & (green == 255)
+        data[..., :-1][white_areas.T] = color
+
+        im2 = Image.fromarray(data)
+        image5 = im2
+
+        # Circular crop for artwork
+        image3 = image11.crop((280, 0, 1000, 720))
+        lum_img = Image.new("L", [720, 720], 0)
+        draw_circle = ImageDraw.Draw(lum_img)
+        draw_circle.pieslice([(0, 0), (720, 720)], 0, 360, fill=255, outline="white")
+
+        img_arr = np.array(image3)
+        lum_img_arr = np.array(lum_img)
+        final_img_arr = np.dstack((img_arr, lum_img_arr))
+        image3 = Image.fromarray(final_img_arr)
+        image3 = image3.resize((600, 600), Image.LANCZOS)
+
+        image2.paste(image3, (50, 70), mask=image3)
+        image2.paste(image5, (0, 0), mask=image5)
+
+        # Typography
         try:
-            arial = ImageFont.truetype(FONT2_PATH, 28)
-            time_font = ImageFont.truetype(FONT_PATH, 28)
-            title_font = ImageFont.truetype(FONT3_PATH, 42)
+            font1 = ImageFont.truetype(ROBOT_FONT_PATH, 30)
+            font2 = ImageFont.truetype(ROBOT_FONT_PATH, 60)
+            font3 = ImageFont.truetype(ROBOT_FONT_PATH, 49)
+            font4 = ImageFont.truetype(INFO_FONT_PATH, 35)
         except Exception:
-            arial = ImageFont.load_default()
-            time_font = ImageFont.load_default()
-            title_font = ImageFont.load_default()
+            font1 = ImageFont.load_default()
+            font2 = ImageFont.load_default()
+            font3 = ImageFont.load_default()
+            font4 = ImageFont.load_default()
 
-        # 3. Paste Circular Artwork
-        circle_thumb = _crop_center_circle(youtube, 400, 15)
-        bg.paste(circle_thumb, (120, 160), circle_thumb)
+        image4 = ImageDraw.Draw(image2)
+        image4.text((10, 10), "STDMUSIC", fill="white", font=font1, align="left")
+        image4.text(
+            (670, 150),
+            "NOW PLAYING",
+            fill="white",
+            font=font2,
+            stroke_width=2,
+            stroke_fill="white",
+            align="left",
+        )
 
-        draw = ImageDraw.Draw(bg)
-        text_x = 565
+        clean_title = re.sub(r"[\(\[\{].*?[\)\]\}]", "", title).strip() or title or "Now Playing Track"
+        title1 = truncate_title(clean_title)
+        image4.text((670, 280), text=title1[0], fill="white", font=font3, align="left")
+        if title1[1]:
+            image4.text((670, 332), text=title1[1], fill="white", font=font3, align="left")
 
-        # 4. Clean text
-        display_title = re.sub(r"[\(\[\{].*?[\)\]\}]", "", title).strip() or title or "Now Playing Track"
-        t1, t2 = _truncate_title(display_title)
-        draw.text((text_x, 180), t1, fill=(255, 255, 255), font=title_font)
-        if t2:
-            draw.text((text_x, 235), t2, fill=(255, 255, 255), font=title_font)
+        views_text = f"Views : {views}" if views else "Views : Live Stream"
+        duration_text = f"Duration : {duration} minutes" if duration else "Duration : 03:45 minutes"
+        channel_text = f"Channel : {channel}" if channel else "Channel : Music Hub"
 
-        channel_str = channel or "YouTube Stream"
-        views_str = f"  |  {views}" if views else ""
-        draw.text((text_x, 320), f"{channel_str[:30]}{views_str}", fill=(215, 220, 235), font=arial)
+        image4.text((670, 410), text=views_text, fill="white", font=font4, align="left")
+        image4.text((670, 460), text=duration_text, fill="white", font=font4, align="left")
+        image4.text((670, 510), text=channel_text, fill="white", font=font4, align="left")
 
-        # 5. Neon Seek Progress Bar
-        line_length = 580
-        played_length = int(line_length * 0.58)
-
-        # Played track line (Vivid Crimson Neon)
-        draw.line([(text_x, 380), (text_x + played_length, 380)], fill=(255, 45, 85), width=8)
-        # Unplayed track line (Subtle Translucent Silver)
-        draw.line([(text_x + played_length, 380), (text_x + line_length, 380)], fill=(190, 195, 205), width=8)
-
-        # Seeker Indicator circle
-        seek_x = text_x + played_length
-        draw.ellipse([seek_x - 9, 380 - 9, seek_x + 9, 380 + 9], fill=(255, 45, 85))
-
-        # Time labels
-        duration_label = duration if duration else "03:45"
-        draw.text((text_x, 402), "00:00", fill=(255, 255, 255), font=time_font)
-        draw.text((1070, 402), duration_label, fill=(255, 255, 255), font=time_font)
-
-        # 6. Playback controls icons
-        if os.path.isfile(PLAY_ICONS_PATH):
-            try:
-                play_icons = Image.open(PLAY_ICONS_PATH).convert("RGBA")
-                play_icons = play_icons.resize((580, 62), Image.LANCZOS)
-                bg.paste(play_icons, (text_x, 450), play_icons)
-            except Exception:
-                pass
-
-        # 7. Save to cache
-        bg.save(cache_path, "PNG")
+        image2.save(cache_path, "PNG")
 
     finally:
         if os.path.isfile(raw_thumb_path):

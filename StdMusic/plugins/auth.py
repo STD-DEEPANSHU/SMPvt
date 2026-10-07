@@ -1,9 +1,5 @@
-try:
-    from stdgram import filters
-    from stdgram.types import Message
-except ImportError:
-    from pyrogram import filters
-    from pyrogram.types import Message
+from stdgram import filters
+from stdgram.types import Message
 
 from StdMusic import app
 from ..misc import is_admin, add_auth_user, remove_auth_user

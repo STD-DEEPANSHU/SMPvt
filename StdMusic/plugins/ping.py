@@ -1,12 +1,8 @@
 import time
 import psutil
 
-try:
-    from stdgram import filters
-    from stdgram.types import Message
-except ImportError:
-    from pyrogram import filters
-    from pyrogram.types import Message
+from stdgram import filters
+from stdgram.types import Message
 
 from StdMusic import app, BOT_NAME
 from ..utils.formatters import get_readable_time, format_bytes

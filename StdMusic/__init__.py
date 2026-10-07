@@ -23,7 +23,7 @@ if _spec and _spec.origin:
             except Exception:
                 pass
 
-# 2. Setup Pyrogram Compatibility Bridge for PyTgCalls using StdGram
+# 2. MTProto Bridge for PyTgCalls voice calls
 if "pyrogram" not in sys.modules:
     try:
         import stdgram
@@ -69,17 +69,14 @@ if "pyrogram" not in sys.modules:
     except Exception:
         pass
 
-try:
-    from stdgram import Client, filters
-except (ImportError, Exception):
-    from pyrogram import Client, filters
+from stdgram import Client, filters
 
 if not hasattr(filters, "regex"):
     def _regex(pattern):
         return filters.create(lambda _, __, q: bool(re.search(pattern, getattr(q, "data", "") or getattr(q, "text", ""))))
     filters.regex = _regex
 
-# 3. Patch PyTgCalls to accept StdGram as valid MTProto Client
+# 3. Voice call client binding for PyTgCalls
 try:
     from pytgcalls import PyTgCalls
     try:
@@ -155,7 +152,7 @@ pytgcalls = None
 if userbot and PyTgCalls:
     try:
         pytgcalls = PyTgCalls(userbot)
-        logger.info("PyTgCalls voice chat engine initialized successfully with StdGram client.")
+        logger.info("PyTgCalls voice chat engine initialized successfully.")
     except Exception as e:
         logger.error(f"Failed to initialize PyTgCalls engine: {e}", exc_info=True)
 
